@@ -1,1 +1,0 @@
-"# TranslationProject_Front" 
