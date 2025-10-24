@@ -1,7 +1,13 @@
 import React from 'react';
+import UserNav from "./UserNav";
 
 const ToolsPage = () => {
-  return <div>Tools Page</div>;
+  return (
+      <div>
+        <UserNav/>
+        Tools Page
+      </div>
+  );
 };
 
 export default ToolsPage;
