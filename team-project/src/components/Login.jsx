@@ -10,7 +10,7 @@ import {useAuth} from "../contexts/AuthContext.jsx";
 import apiClient from '../util/axiosInstance.jsx'
 
 const Login = () => {
-
+    const API_SERVER_HOST = 'http://localhost:8080';
     const [form, setForm] = useState({ memberId: "", password: "" });
     const [errors, setErrors] = useState({});
     const [isLoading, setIsLoading] = useState(false);
@@ -56,42 +56,39 @@ const Login = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        // 유효성 검사 로직 추가
+        const validationErrors = validateForm();
+        if (Object.keys(validationErrors).length > 0) {
+            setErrors(validationErrors);
+            return;
+        }
+        setIsLoading(true); // 로딩 시작
         try {
             const response = await axios.post(
-                'http://localhost:8080/generateToken',
+                `${API_SERVER_HOST}/generateToken`, // 1번에서 추가한 변수 사용
                 form,
                 {
                     headers: { 'Content-Type': 'application/json' },
                 },
             );
 
-            //추가, 로그인 정보 표기
-            //login({ memberId: this.memberId }); // Context에 로그인 정보 저장
+            localStorage.setItem('accessToken', response.data.accessToken);
+            localStorage.setItem('refreshToken', response.data.refreshToken);
 
-            localStorage.setItem('accessToken', response.data.accessToken); // 토큰 저장
-            localStorage.setItem('refreshToken', response.data.refreshToken); // 토큰 저장
-            // 사용자 정보 가져오기
             const userDetailsResponse = await apiClient.get('/member/me');
-            const userName = userDetailsResponse.data.userName; // userName 속성이 있다고 가정
+            const userName = userDetailsResponse.data.userName;
 
-            login({ memberId: form.memberId, userName: userName }); // Context에 로그인 정보 저장
+            login({ memberId: form.memberId, userName: userName });
             alert('로그인 성공!');
-            navigate('/toolspage'); // 로그인 후 대시보드로 이동
+            navigate('/toolspage');
         } catch (error) {
-            alert('로그인 실패');
+            alert('로그인 실패: 아이디 또는 비밀번호를 확인하세요.');
             console.error(error);
+        } finally {
+            setIsLoading(false); // 로딩 종료
         }
     };
 
-    const handleKakaoLogin = () => {
-        // Handle Kakao login logic here
-        console.log('Logging in with Kakao');
-    };
-
-    const handleGoogleLogin = () => {
-        // Handle Google login logic here
-        console.log('Logging in with Google');
-    };
     return (
         <div className="login-container">
 
@@ -129,44 +126,46 @@ const Login = () => {
                     <button type="submit" className="login-btn" disabled={isLoading}>
                         {isLoading ? <FaSpinner className="spinner" /> : "로그인"}
                     </button>
-                    <button
-                        type="button"
-                        onClick={handleKakaoLogin}
-                        style={{
-                            backgroundColor: '#FEE500', // Kakao yellow
-                            color: '#191919', // Dark text for contrast
-                            padding: '12px',
-                            border: 'none',
-                            borderRadius: '12px',
-                            fontSize: '16px',
-                            fontWeight: 'bold',
-                            cursor: 'pointer',
-                            transition: 'all 0.3s ease',
-                            marginTop: '-10px', // Reduce space from the login button by counteracting form gap
-                            width: '100%', // Make it full width like the login button
-                        }}
-                    >
-                        <RiKakaoTalkFill style={{ marginRight: '8px' }} /> 카카오 로그인
-                    </button>
-                    <button
-                        type="button"
-                        onClick={handleGoogleLogin}
-                        style={{
-                            backgroundColor: '#FFFFFF', // White background
-                            color: '#191919', // Dark text
-                            border: '1px solid #000000', // Black border
-                            padding: '12px',
-                            borderRadius: '12px',
-                            fontSize: '16px',
-                            fontWeight: 'bold',
-                            cursor: 'pointer',
-                            transition: 'all 0.3s ease',
-                            marginTop: '-10px', // Set negative top margin as requested
-                            width: '100%', // Make it full width
-                        }}
-                    >
-                        <FaGoogle style={{ marginRight: '8px' }} /> 구글 로그인
-                    </button>
+                    <a href={`${API_SERVER_HOST}/oauth2/authorization/kakao`} style={{ textDecoration: 'none' }}>
+                        <button
+                            type="button"
+                            style={{
+                                backgroundColor: '#FEE500',
+                                color: '#191919',
+                                padding: '12px',
+                                border: 'none',
+                                borderRadius: '12px',
+                                fontSize: '16px',
+                                fontWeight: 'bold',
+                                cursor: 'pointer',
+                                transition: 'all 0.3s ease',
+                                marginTop: '-10px',
+                                width: '100%',
+                            }}
+                        >
+                            <RiKakaoTalkFill style={{ marginRight: '8px', verticalAlign: 'middle' }} /> 카카오 로그인
+                        </button>
+                    </a>
+                    <a href={`${API_SERVER_HOST}/oauth2/authorization/google`} style={{ textDecoration: 'none' }}>
+                        <button
+                            type="button"
+                            style={{
+                                backgroundColor: '#FFFFFF',
+                                color: '#191919',
+                                border: '1px solid #000000',
+                                padding: '12px',
+                                borderRadius: '12px',
+                                fontSize: '16px',
+                                fontWeight: 'bold',
+                                cursor: 'pointer',
+                                transition: 'all 0.3s ease',
+                                marginTop: '10px',
+                                width: '100%',
+                            }}
+                        >
+                            <FaGoogle style={{ marginRight: '8px', verticalAlign: 'middle' }} /> 구글 로그인
+                        </button>
+                    </a>
                 </form>
 
                 <p className="signup-text">
