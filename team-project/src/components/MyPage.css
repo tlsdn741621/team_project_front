@@ -1,0 +1,239 @@
+/*!* 1️⃣ HTML, BODY, #root, .App 초기화 *!*/
+/*html, body, #root, .App {*/
+/*    margin: 0;*/
+/*    padding: 0;*/
+/*    width: 100%;*/
+/*    height: 100%;*/
+/*    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;*/
+/*    position: relative;*/
+/*}*/
+
+/*!* 2️⃣ 전체 배경 *!*/
+/*body::before {*/
+/*    content: "";*/
+/*    position: fixed;*/
+/*    top: 0;*/
+/*    left: 0;*/
+/*    width: 100vw;*/
+/*    height: 100vh;*/
+/*    background: url('https://images.unsplash.com/photo-1508780709619-79562169bc64?auto=format&fit=crop&w=1350&q=80') no-repeat center center;*/
+/*    background-size: cover;*/
+/*    opacity: 0.15;*/
+/*    z-index: -2;*/
+/*}*/
+
+/*body::after {*/
+/*    content: "";*/
+/*    position: fixed;*/
+/*    top: 0;*/
+/*    left: 0;*/
+/*    width: 100vw;*/
+/*    height: 100vh;*/
+/*    background: linear-gradient(135deg, #74ebd5 0%, #9face6 100%);*/
+/*    opacity: 0.6;*/
+/*    z-index: -1;*/
+/*}*/
+
+/*!* 3️⃣ 컨테이너 (Flexbox를 사용한 중앙 정렬) *!*/
+/*.login-container {*/
+/*    display: flex;*/
+/*    justify-content: center; !* 가로 중앙 정렬 *!*/
+/*    align-items: center;   !* 세로 중앙 정렬 *!*/
+/*    width: 100%;*/
+/*    height: 100%;*/
+/*    position: relative;*/
+/*    z-index: 1;*/
+/*}*/
+
+/*!* 4️⃣ 박스 *!*/
+/*.login-box {*/
+/*    background: rgba(255, 255, 255, 0.95);*/
+/*    padding: 40px;*/
+/*    border-radius: 20px;*/
+/*    width: 450px;*/
+/*    max-width: 90%;*/
+/*    box-shadow: 0px 8px 25px rgba(0,0,0,0.2);*/
+/*    text-align: center;*/
+/*    animation: fadeIn 1s ease-out;*/
+/*}*/
+
+/*!* 5️⃣ 제목, 부제목 *!*/
+/*.login-title {*/
+/*    font-size: 28px;*/
+/*    font-weight: bold;*/
+/*    color: #333;*/
+/*    margin-bottom: 10px;*/
+/*}*/
+
+/*.login-subtitle {*/
+/*    font-size: 14px;*/
+/*    color: #666;*/
+/*    margin-bottom: 30px;*/
+/*}*/
+
+/*!* 회원 정보 표시 섹션 *!*/
+/*.user-info-section {*/
+/*    text-align: left;*/
+/*    margin-bottom: 30px;*/
+/*    padding: 20px;*/
+/*    background-color: #f9f9f9;*/
+/*    border-radius: 12px;*/
+/*    border: 1px solid #eee;*/
+/*}*/
+
+/*.info-item {*/
+/*    display: flex;*/
+/*    align-items: center;*/
+/*    color: #555;*/
+/*    font-size: 16px;*/
+/*    margin-bottom: 15px;*/
+/*}*/
+
+/*.info-item:last-child {*/
+/*    margin-bottom: 0;*/
+/*}*/
+
+/*.info-icon {*/
+/*    margin-right: 15px;*/
+/*    color: #6a5acd;*/
+/*    font-size: 18px;*/
+/*}*/
+
+/*.change-password-title {*/
+/*    font-size: 20px;*/
+/*    color: #444;*/
+/*    margin-bottom: 20px;*/
+/*    border-top: 1px solid #eee;*/
+/*    padding-top: 25px;*/
+/*}*/
+
+/*!* 6️⃣ 폼, 입력 그룹 *!*/
+/*.login-form {*/
+/*    display: flex;*/
+/*    flex-direction: column;*/
+/*    gap: 15px;*/
+/*}*/
+
+/*!* 7️⃣ 입력 그룹 *!*/
+/*.input-group {*/
+/*    display: flex;*/
+/*    align-items: center;*/
+/*    border: 2px solid #ddd;*/
+/*    border-radius: 12px;*/
+/*    padding: 10px 15px;*/
+/*    background: #f9f9f9;*/
+/*    transition: border-color 0.3s ease;*/
+/*    margin-bottom: 10px;*/
+/*    position: relative;*/
+/*}*/
+
+/*.input-group:focus-within {*/
+/*    border-color: #6a5acd;*/
+/*}*/
+
+/*!* 8️⃣ 입력 필드 *!*/
+/*.input {*/
+/*    border: none;*/
+/*    outline: none;*/
+/*    flex: 1;*/
+/*    font-size: 14px;*/
+/*    background: transparent;*/
+/*    color: #333;*/
+/*    padding-left: 40px;*/
+/*    padding-right: 10px;*/
+/*}*/
+
+/*!* 9️⃣ 입력 필드 아이콘 *!*/
+/*.input-icon {*/
+/*    position: absolute;*/
+/*    left: 15px;*/
+/*    font-size: 18px;*/
+/*    color: #999;*/
+/*}*/
+
+/*!* 🔟 오류 메시지 *!*/
+/*.error-text {*/
+/*    font-size: 12px;*/
+/*    color: red;*/
+/*    text-align: left;*/
+/*    margin-top: -10px;*/
+/*    margin-bottom: 10px;*/
+/*    padding-left: 15px;*/
+/*}*/
+
+/*!* 1️⃣1️⃣ 버튼 및 스피너 *!*/
+/*.login-btn {*/
+/*    background: #6a5acd;*/
+/*    color: white;*/
+/*    padding: 12px;*/
+/*    border: none;*/
+/*    border-radius: 12px;*/
+/*    font-size: 16px;*/
+/*    font-weight: bold;*/
+/*    cursor: pointer;*/
+/*    transition: all 0.3s ease;*/
+/*    margin-top: 10px;*/
+/*}*/
+
+/*.login-btn:hover {*/
+/*    background: #5a4ccf;*/
+/*    transform: scale(1.03);*/
+/*}*/
+
+/*.login-btn:disabled {*/
+/*    opacity: 0.7;*/
+/*    cursor: not-allowed;*/
+/*}*/
+
+/*.spinner {*/
+/*    display: inline-block;*/
+/*    width: 20px;*/
+/*    height: 20px;*/
+/*    border: 3px solid rgba(255, 255, 255, 0.3);*/
+/*    border-radius: 50%;*/
+/*    border-top-color: #fff;*/
+/*    animation: spin 1s linear infinite;*/
+/*}*/
+
+
+/*!* 1️⃣3️⃣ 애니메이션 *!*/
+/*@keyframes spin {*/
+/*    from {*/
+/*        transform: rotate(0deg);*/
+/*    }*/
+/*    to {*/
+/*        transform: rotate(360deg);*/
+/*    }*/
+/*}*/
+
+/*@keyframes fadeIn {*/
+/*    from {*/
+/*        opacity: 0;*/
+/*        transform: translateY(30px);*/
+/*    }*/
+/*    to {*/
+/*        opacity: 1;*/
+/*        transform: translateY(0);*/
+/*    }*/
+/*}*/
+
+/*!* 1️⃣4️⃣ 반응형 *!*/
+/*@media (max-width: 480px) {*/
+/*    .login-box {*/
+/*        padding: 30px;*/
+/*        width: 90%;*/
+/*    }*/
+/*    .login-title {*/
+/*        font-size: 24px;*/
+/*    }*/
+/*    .login-subtitle {*/
+/*        font-size: 12px;*/
+/*    }*/
+/*    .input {*/
+/*        font-size: 13px;*/
+/*    }*/
+/*    .login-btn {*/
+/*        font-size: 14px;*/
+/*        padding: 10px;*/
+/*    }*/
+/*}*/
