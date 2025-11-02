@@ -139,7 +139,6 @@ const Login = () => {
                                 fontWeight: 'bold',
                                 cursor: 'pointer',
                                 transition: 'all 0.3s ease',
-                                marginTop: '-10px',
                                 width: '100%',
                             }}
                         >
@@ -159,11 +158,29 @@ const Login = () => {
                                 fontWeight: 'bold',
                                 cursor: 'pointer',
                                 transition: 'all 0.3s ease',
-                                marginTop: '10px',
                                 width: '100%',
                             }}
                         >
                             <FaGoogle style={{ marginRight: '8px', verticalAlign: 'middle' }} /> 구글 로그인
+                        </button>
+                    </a>
+                    <a href={`${API_SERVER_HOST}/oauth2/authorization/naver`} style={{ textDecoration: 'none' }}>
+                        <button
+                            type="button"
+                            style={{
+                                backgroundColor: '#03C75A',
+                                color: 'white',
+                                padding: '12px',
+                                border: 'none',
+                                borderRadius: '12px',
+                                fontSize: '16px',
+                                fontWeight: 'bold',
+                                cursor: 'pointer',
+                                transition: 'all 0.3s ease',
+                                width: '100%',
+                            }}
+                        >
+                            <span style={{ marginRight: '8px', verticalAlign: 'middle', fontWeight:'bold' }}>N</span> 네이버 로그인
                         </button>
                     </a>
                 </form>
