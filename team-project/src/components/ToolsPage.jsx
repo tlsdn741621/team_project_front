@@ -1,191 +1,165 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import axiosInstance from '../util/axiosInstance';
 
-// 중요: 더 이상 여기에 API 키를 직접 입력하지 않습니다.
-// 대신 백엔드 Spring Boot에서 안전하게 가져오게 됩니다.
-const HARDCODED_KEY_CHECK = "YOUR_GOOGLE_MAPS_API_KEY";
-
-/**
- * 지도를 렌더링하는 컴포넌트입니다.
- * Google Maps API가 전역으로 로드된 후에만 렌더링됩니다.
- */
-const GoogleMapDisplay = ({ center }) => {
-    const mapRef = useRef(null);
-    const mapInstanceRef = useRef(null);
-
-    useEffect(() => {
-        // window.google 객체가 존재하는지 확인하고, 맵을 렌더링할 DOM 요소가 준비되었는지 확인합니다.
-        if (window.google && mapRef.current) {
-            console.log("Google Maps 객체 확인됨. 지도 초기화 시작.");
-
-            // Map 생성자 호출
-            mapInstanceRef.current = new window.google.maps.Map(mapRef.current, {
-                center: center,
-                zoom: 12,
-                // mapId를 사용하는 것이 최신 API 권장 사항입니다. 커스텀 스타일링에 유용합니다.
-                mapId: "DEMO_MAP_ID",
-                disableDefaultUI: false,
-            });
-
-            // 마커 추가 예시
-            new window.google.maps.Marker({
-                position: center,
-                map: mapInstanceRef.current,
-                title: "시작 지점 (서울)",
-            });
-        }
-    }, [center]);
-
-    // mapRef는 지도가 초기화될 DOM 요소를 참조합니다.
-    return <div
-        ref={mapRef}
-        className="h-full w-full rounded-xl shadow-inner bg-gray-200"
-        aria-label="Google 지도 표시 영역"
-    />;
+// --- 상태(Status) 정의 ---
+const STATUS = {
+    IDLE: 'idle',
+    LOADING_KEY: 'loading-key',
+    LOADING_SCRIPT: 'loading-script',
+    READY: 'ready',
+    ERROR: 'error',
 };
 
 /**
- * 메인 애플리케이션 컴포넌트입니다.
- * 1. 백엔드에서 API 키를 가져옵니다.
- * 2. 키를 받으면 Google Maps API 스크립트를 동적으로 로드합니다.
+ * 구글 지도 API 키를 백엔드에서 가져와 지도를 표시하는 페이지 컴포넌트
  */
-export default function App() {
-    const [apiKey, setApiKey] = useState(null); // 백엔드에서 가져온 키
-    const [scriptLoaded, setScriptLoaded] = useState(false);
+const ToolsPage = () => {
+    const [status, setStatus] = useState(STATUS.IDLE);
     const [error, setError] = useState(null);
-
-    // 지도의 초기 중심 좌표 (예: 서울)
-    const defaultCenter = useMemo(() => ({ lat: 37.5665, lng: 126.9780 }), []);
+    const mapRef = useRef(null); // 지도가 렌더링될 DOM 요소를 참조
+    const mapInstanceRef = useRef(null); // 지도 인스턴스를 저장
 
     useEffect(() => {
-        // 1. 키를 백엔드에서 가져오는 함수
-        const fetchApiKey = async () => {
+        // 이 Effect는 컴포넌트가 처음 마운트될 때 단 한 번만 실행되어야 합니다.
+        // 따라서 의존성 배열을 빈 배열([])로 설정합니다.
+
+        const fetchApiKeyAndLoadScript = async () => {
+            setStatus(STATUS.LOADING_KEY);
+            console.log('1. 백엔드에서 API 키 로드를 시작합니다.');
+
             try {
-                console.log("백엔드에서 API 키 로드 요청: /api/config/google-key");
-                // Spring Boot 애플리케이션의 엔드포인트 URL을 사용하세요.
-                // 현재는 개발 환경을 위해 상대 경로를 사용합니다.
-                const response = await fetch('/api/config/google-key');
-
-                if (!response.ok) {
-                    throw new Error(`HTTP 상태 ${response.status}. 백엔드 서버를 확인하세요.`);
-                }
-
-                const data = await response.json();
-
-                // 백엔드가 { "key": "AIza..." } 형태로 반환한다고 가정
-                if (data.key) {
-                    setApiKey(data.key);
-                    return data.key;
+                const response = await axiosInstance.get('/config/google-key');
+                if (response.data && response.data.key) {
+                    console.log('2. API 키를 성공적으로 받았습니다.');
+                    loadGoogleMapsScript(response.data.key);
                 } else {
-                    throw new Error("백엔드에서 유효한 키(key 필드)를 받지 못했습니다.");
+                    throw new Error('백엔드 응답에 유효한 API 키(key) 필드가 없습니다.');
                 }
-            } catch (e) {
-                console.error("API Key Fetch Error:", e);
-                setError(`API 키 로드 오류: ${e.message}. 백엔드 연결 및 CORS 설정을 확인하세요.`);
-                return null;
+            } catch (err) {
+                console.error('API 키 로드 중 오류 발생:', err);
+                const errorMessage = err.response
+                    ? `HTTP ${err.response.status} 오류. 로그인 상태와 백엔드 서버를 확인하세요.`
+                    : err.message;
+                setError(errorMessage);
+                setStatus(STATUS.ERROR);
             }
         };
 
-        // 2. Google Maps 스크립트를 로드하는 함수
-        const loadGoogleMapsScript = (key) => {
+        const loadGoogleMapsScript = (apiKey) => {
+            setStatus(STATUS.LOADING_SCRIPT);
+            console.log('3. 구글 지도 스크립트 로드를 시작합니다.');
+
             if (window.google) {
-                setScriptLoaded(true);
+                initializeMap();
                 return;
             }
 
-            if (!key) return;
-
-            const scriptId = 'google-maps-script';
-            if (document.getElementById(scriptId)) return;
-
-            const script = document.createElement('script');
-            script.id = scriptId;
-            // 백엔드에서 가져온 키를 사용
-            script.src = `https://maps.googleapis.com/maps/api/js?key=${key}&callback=initMap`;
-            script.async = true;
-
-            // 전역 콜백 함수 정의 (스크립트 로드 완료 시 API가 호출하는 함수)
             window.initMap = () => {
-                console.log("Google Maps 스크립트 로드 완료.");
-                setScriptLoaded(true);
+                console.log('4. 구글 지도 스크립트 로드 완료. 지도 초기화를 시작합니다.');
+                initializeMap();
             };
 
+            const script = document.createElement('script');
+            script.id = 'google-maps-script';
+            script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&callback=initMap`;
+            script.async = true;
+            script.defer = true;
             script.onerror = () => {
-                console.error("Google Maps 스크립트 로드 실패.");
-                setError("Google Maps 스크립트 로드에 실패했습니다. 키가 유효한지 확인하세요.");
+                setError('구글 지도 스크립트를 로드하지 못했습니다. API 키가 유효한지 확인하세요.');
+                setStatus(STATUS.ERROR);
                 delete window.initMap;
             };
 
             document.head.appendChild(script);
-            console.log("Google Maps 스크립트 로드 요청 시작...");
         };
 
-        // 3. 실행 로직: 키가 없으면 로드하고, 키가 있으면 스크립트를 로드
-        if (!apiKey && !error) {
-            fetchApiKey().then(key => {
-                if (key) {
-                    loadGoogleMapsScript(key);
-                }
-            });
-        } else if (apiKey && !scriptLoaded) {
-            loadGoogleMapsScript(apiKey);
-        }
+        const initializeMap = () => {
+            if (!mapRef.current || !window.google) {
+                console.error('지도 DOM 요소나 window.google 객체를 찾을 수 없습니다.', { hasMapRef: !!mapRef.current, hasWindowGoogle: !!window.google });
+                setError('지도를 초기화하는 데 실패했습니다.');
+                setStatus(STATUS.ERROR);
+                return;
+            }
 
-        // 4. 클린업 함수
+            if (mapInstanceRef.current) return;
+
+            mapInstanceRef.current = new window.google.maps.Map(mapRef.current, {
+                center: { lat: 37.5665, lng: 126.9780 },
+                zoom: 12,
+            });
+
+            console.log('5. 지도가 성공적으로 초기화되었습니다.');
+            setStatus(STATUS.READY);
+        };
+
+        // 컴포넌트 마운트 시 API 로딩 시작
+        fetchApiKeyAndLoadScript();
+
+        // 클린업 함수: 컴포넌트가 언마운트될 때만 실행됩니다.
         return () => {
+            const script = document.getElementById('google-maps-script');
+            if (script) {
+                script.remove();
+            }
             if (window.initMap) {
                 delete window.initMap;
             }
         };
-    }, [apiKey, error, scriptLoaded]); // apiKey 상태 변화에 반응하도록 의존성 추가
+    }, []); // <--- 의존성 배열을 비워서 마운트 시 한 번만 실행되도록 수정
 
-    const isLoading = !apiKey || !scriptLoaded;
+    // 로딩 상태나 에러 메시지를 오버레이로 표시하는 컴포넌트
+    const StatusOverlay = () => {
+        if (status === STATUS.READY) return null;
+
+        let message = '';
+        switch (status) {
+            case STATUS.LOADING_KEY:
+                message = 'API 키 로드 중...';
+                break;
+            case STATUS.LOADING_SCRIPT:
+                message = '지도 데이터 로드 중...';
+                break;
+            case STATUS.ERROR:
+                message = `오류: ${error}`;
+                break;
+            default:
+                return null;
+        }
+
+        return (
+            <div style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                color: status === STATUS.ERROR ? 'red' : 'black',
+                zIndex: 10,
+            }}>
+                {message}
+            </div>
+        );
+    };
 
     return (
-        <div className="min-h-screen bg-gray-50 p-8 flex flex-col items-center font-inter">
-            <header className="mb-8 text-center w-full max-w-4xl">
-                <h1 className="text-4xl font-extrabold text-indigo-700">
-                    Google 지도 컴포넌트 ({isLoading ? '로드 중' : '로드 완료'})
-                </h1>
-                <p className="text-lg text-gray-600 mt-2">
-                    API 키를 백엔드에서 가져와 지도를 띄우는 예제입니다.
-                </p>
-            </header>
-
-            <div className="w-full max-w-4xl h-[60vh] min-h-[400px] bg-white rounded-xl shadow-2xl p-4 transition-all duration-300">
-                {error ? (
-                    // 1. 에러 표시
-                    <div className="flex justify-center items-center h-full text-red-700 bg-red-100 border-2 border-red-300 p-6 rounded-lg text-xl font-bold text-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        {error}
-                    </div>
-                ) : !apiKey ? (
-                    // 2. 키 로드 중 표시 (백엔드 통신 대기)
-                    <div className="flex justify-center items-center h-full text-blue-600">
-                        <svg className="animate-spin -ml-1 mr-3 h-8 w-8 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
-                        <p className="text-xl font-medium">백엔드에서 API 키 로드 중...</p>
-                    </div>
-                ) : !scriptLoaded ? (
-                    // 3. 스크립트 로드 중 표시 (API 키 수신 완료 후)
-                    <div className="flex justify-center items-center h-full text-indigo-600">
-                        <svg className="animate-spin -ml-1 mr-3 h-8 w-8 text-indigo-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
-                        <p className="text-xl font-medium">Google Maps 스크립트 로드 중...</p>
-                    </div>
-                ) : (
-                    // 4. 지도 표시
-                    <GoogleMapDisplay center={defaultCenter} />
-                )}
+        <div style={{ padding: '20px', fontFamily: 'sans-serif' }}>
+            <h1>Google 지도 연동 페이지</h1>
+            <div style={{ 
+                position: 'relative',
+                width: '800px', 
+                height: '600px', 
+                border: '1px solid #ccc', 
+                marginTop: '20px' 
+            }}>
+                <StatusOverlay />
+                <div ref={mapRef} style={{ width: '100%', height: '100%' }} />
             </div>
-            <footer className="mt-6 text-sm text-gray-500">
-                <p>지도가 성공적으로 로드되면 서울 중심(37.5665, 126.9780)에 위치한 지도가 표시됩니다. (키는 백엔드에서 로드되었습니다)</p>
-            </footer>
         </div>
     );
-}
+};
+
+export default ToolsPage;
