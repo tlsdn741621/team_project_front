@@ -68,7 +68,8 @@ const Login = () => {
                 `${API_SERVER_HOST}/generateToken`, // 1번에서 추가한 변수 사용
                 form,
                 {
-                    headers: { 'Content-Type': 'application/json' },
+                    mid: form.memberId,
+                    mpw: form.password,
                 },
             );
 
