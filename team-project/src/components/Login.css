@@ -77,7 +77,7 @@ body::after {
 .login-form {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 10px;
 }
 
 /* 7️⃣ 입력 그룹 */
