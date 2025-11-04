@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axiosInstance from '../util/axiosInstance';
 import UserNav from "./UserNav";
+import CoordinatePanel from "./CoordinatePanel"; // 방금 만든 컴포넌트 import
 
 // --- 상태(Status) 정의 ---
 const STATUS = {
@@ -23,6 +24,7 @@ const ToolsPage = () => {
 
     // 마커의 위치를 저장하는 상태
     const [markerPosition, setMarkerPosition] = useState(null);
+    const [isPanelOpen, setIsPanelOpen] = useState(false); // 패널 상태 추가
 
     useEffect(() => {
         // 이 Effect는 컴포넌트가 처음 마운트될 때 단 한 번만 실행되어야 합니다.
@@ -173,14 +175,33 @@ const ToolsPage = () => {
         <div style={{ padding: '20px', fontFamily: 'sans-serif' }}>
             <UserNav />
             <h1>Google 지도 연동 페이지</h1>
-            {/* 마커 좌표 표시 */}
-            {markerPosition && (
-                <div style={{ marginTop: '10px', padding: '10px', border: '1px solid #eee', borderRadius: '5px' }}>
-                    <p><strong>선택된 위치 좌표:</strong></p>
-                    <p>위도: {markerPosition.lat.toFixed(6)}</p>
-                    <p>경도: {markerPosition.lng.toFixed(6)}</p>
-                </div>
-            )}
+
+            {/* 좌표 확인 패널 토글 버튼 */}
+            <button 
+                onClick={() => setIsPanelOpen(!isPanelOpen)}
+                style={{
+                    position: 'fixed',
+                    top: '80px',
+                    right: '20px',
+                    zIndex: 101, // 패널보다 위에 오도록 zIndex 조정
+                    padding: '10px 20px',
+                    backgroundColor: '#6a5acd',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '5px',
+                    cursor: 'pointer',
+                }}
+            >
+                {isPanelOpen ? '좌표 패널 닫기' : '좌표 패널 열기'}
+            </button>
+
+            {/* 좌표 정보 패널 컴포넌트 사용 */}
+            <CoordinatePanel 
+                isOpen={isPanelOpen}
+                onClose={() => setIsPanelOpen(false)}
+                position={markerPosition}
+            />
+
             <div style={{ 
                 position: 'relative',
                 width: '800px', 
