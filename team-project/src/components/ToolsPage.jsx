@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axiosInstance from '../util/axiosInstance';
 import UserNav from "./UserNav";
+import CoordinatePanel from "./CoordinatePanel"; // 방금 만든 컴포넌트 import
 
 // --- 상태(Status) 정의 ---
 const STATUS = {
@@ -19,6 +20,73 @@ const ToolsPage = () => {
     const [error, setError] = useState(null);
     const mapRef = useRef(null); // 지도가 렌더링될 DOM 요소를 참조
     const mapInstanceRef = useRef(null); // 지도 인스턴스를 저장
+    const markerRef = useRef(null); // 마커 인스턴스를 저장
+
+    // 마커의 위치를 저장하는 상태
+    const [markerPosition, setMarkerPosition] = useState(null);
+    const [isPanelOpen, setIsPanelOpen] = useState(false); // 패널 상태 추가
+
+    // 예측 관련 상태 추가
+    const [isPredicting, setIsPredicting] = useState(false);
+    const [predictionResult, setPredictionResult] = useState(null);
+    const [predictionError, setPredictionError] = useState(null);
+
+    // CoordinatePanel에서 전달된 새 좌표로 마커와 지도를 업데이트하는 함수
+    const handlePositionChange = (newPosition) => {
+        setMarkerPosition(newPosition);
+
+        // 지도 중심 이동
+        if (mapInstanceRef.current) {
+            mapInstanceRef.current.panTo(newPosition);
+        }
+
+        // 마커 위치 업데이트 또는 생성
+        if (markerRef.current) {
+            markerRef.current.setPosition(newPosition);
+        } else {
+            if (mapInstanceRef.current && window.google) {
+                markerRef.current = new window.google.maps.Marker({
+                    position: newPosition,
+                    map: mapInstanceRef.current,
+                });
+            }
+        }
+    };
+
+    // 예측 실행 함수
+    const handlePrediction = async (data) => {
+        if (!data.lat || !data.lng) {
+            setPredictionError("위치를 먼저 선택해주세요.");
+            return;
+        }
+
+        setIsPredicting(true);
+        setPredictionResult(null);
+        setPredictionError(null);
+
+        try {
+            // 백엔드의 예측 API 엔드포인트로 요청합니다.
+            // Spring Boot 컨트롤러가 /api/predict/tsunami 와 같은 경로를 가지도록 설정해야 합니다.
+            const response = await axiosInstance.post('/predict/tsunami', {
+                latitude: data.lat,
+                longitude: data.lng,
+                magnitude: data.magnitude,
+                depth: data.depth,
+            });
+
+            // 백엔드에서 받은 예측 결과를 상태에 저장합니다.
+            // 예: { "tsunamiProbability": 0.85 }
+            setPredictionResult(`쓰나미 발생 확률: ${response.data.tsunamiProbability.toFixed(2)}%`);
+
+        } catch (error) {
+            console.error("예측 API 호출 실패:", error);
+            const errorMessage = error.response?.data?.message || "예측 중 오류가 발생했습니다.";
+            setPredictionError(errorMessage);
+            setPredictionResult(null); // 오류 발생 시 이전 결과 제거
+        } finally {
+            setIsPredicting(false);
+        }
+    };
 
     useEffect(() => {
         // 이 Effect는 컴포넌트가 처음 마운트될 때 단 한 번만 실행되어야 합니다.
@@ -85,8 +153,27 @@ const ToolsPage = () => {
             if (mapInstanceRef.current) return;
 
             mapInstanceRef.current = new window.google.maps.Map(mapRef.current, {
-                center: { lat: 37.5665, lng: 126.9780 },
-                zoom: 12,
+                center: { lat: 36.0, lng: 132.5 },
+                zoom: 7,
+            });
+
+            // 지도 클릭 리스너 추가
+            mapInstanceRef.current.addListener('click', (e) => {
+                const latLng = {
+                    lat: e.latLng.lat(),
+                    lng: e.latLng.lng(),
+                };
+                setMarkerPosition(latLng); // 마커 위치 상태 업데이트
+
+                // 마커가 없으면 새로 생성, 있으면 위치 변경
+                if (markerRef.current) {
+                    markerRef.current.setPosition(latLng);
+                } else {
+                    markerRef.current = new window.google.maps.Marker({
+                        position: latLng,
+                        map: mapInstanceRef.current,
+                    });
+                }
             });
 
             console.log('5. 지도가 성공적으로 초기화되었습니다.');
@@ -150,6 +237,38 @@ const ToolsPage = () => {
         <div style={{ padding: '20px', fontFamily: 'sans-serif' }}>
             <UserNav />
             <h1>Google 지도 연동 페이지</h1>
+
+            {/* 좌표 확인 패널 토글 버튼 */}
+            <button 
+                onClick={() => setIsPanelOpen(!isPanelOpen)}
+                style={{
+                    position: 'fixed',
+                    top: '80px',
+                    right: '20px',
+                    zIndex: 101, // 패널보다 위에 오도록 zIndex 조정
+                    padding: '10px 20px',
+                    backgroundColor: '#6a5acd',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '5px',
+                    cursor: 'pointer',
+                }}
+            >
+                {isPanelOpen ? '시뮬레이션 닫기' : '시뮬레이션 열기'}
+            </button>
+
+            {/* 좌표 정보 패널 컴포넌트 사용 */}
+            <CoordinatePanel 
+                isOpen={isPanelOpen}
+                onClose={() => setIsPanelOpen(false)}
+                position={markerPosition}
+                onPositionChange={handlePositionChange}
+                onPredict={handlePrediction}
+                isPredicting={isPredicting}
+                predictionResult={predictionResult}
+                predictionError={predictionError}
+            />
+
             <div style={{ 
                 position: 'relative',
                 width: '800px', 
