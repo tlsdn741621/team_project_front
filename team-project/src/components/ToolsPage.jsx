@@ -26,6 +26,28 @@ const ToolsPage = () => {
     const [markerPosition, setMarkerPosition] = useState(null);
     const [isPanelOpen, setIsPanelOpen] = useState(false); // 패널 상태 추가
 
+    // CoordinatePanel에서 전달된 새 좌표로 마커와 지도를 업데이트하는 함수
+    const handlePositionChange = (newPosition) => {
+        setMarkerPosition(newPosition);
+
+        // 지도 중심 이동
+        if (mapInstanceRef.current) {
+            mapInstanceRef.current.panTo(newPosition);
+        }
+
+        // 마커 위치 업데이트 또는 생성
+        if (markerRef.current) {
+            markerRef.current.setPosition(newPosition);
+        } else {
+            if (mapInstanceRef.current && window.google) {
+                markerRef.current = new window.google.maps.Marker({
+                    position: newPosition,
+                    map: mapInstanceRef.current,
+                });
+            }
+        }
+    };
+
     useEffect(() => {
         // 이 Effect는 컴포넌트가 처음 마운트될 때 단 한 번만 실행되어야 합니다.
         // 따라서 의존성 배열을 빈 배열([])로 설정합니다.
@@ -200,6 +222,7 @@ const ToolsPage = () => {
                 isOpen={isPanelOpen}
                 onClose={() => setIsPanelOpen(false)}
                 position={markerPosition}
+                onPositionChange={handlePositionChange} // 함수 전달
             />
 
             <div style={{ 
