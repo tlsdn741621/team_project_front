@@ -19,6 +19,10 @@ const ToolsPage = () => {
     const [error, setError] = useState(null);
     const mapRef = useRef(null); // 지도가 렌더링될 DOM 요소를 참조
     const mapInstanceRef = useRef(null); // 지도 인스턴스를 저장
+    const markerRef = useRef(null); // 마커 인스턴스를 저장
+
+    // 마커의 위치를 저장하는 상태
+    const [markerPosition, setMarkerPosition] = useState(null);
 
     useEffect(() => {
         // 이 Effect는 컴포넌트가 처음 마운트될 때 단 한 번만 실행되어야 합니다.
@@ -85,8 +89,27 @@ const ToolsPage = () => {
             if (mapInstanceRef.current) return;
 
             mapInstanceRef.current = new window.google.maps.Map(mapRef.current, {
-                center: { lat: 37.5665, lng: 126.9780 },
-                zoom: 12,
+                center: { lat: 36.0, lng: 132.5 },
+                zoom: 7,
+            });
+
+            // 지도 클릭 리스너 추가
+            mapInstanceRef.current.addListener('click', (e) => {
+                const latLng = {
+                    lat: e.latLng.lat(),
+                    lng: e.latLng.lng(),
+                };
+                setMarkerPosition(latLng); // 마커 위치 상태 업데이트
+
+                // 마커가 없으면 새로 생성, 있으면 위치 변경
+                if (markerRef.current) {
+                    markerRef.current.setPosition(latLng);
+                } else {
+                    markerRef.current = new window.google.maps.Marker({
+                        position: latLng,
+                        map: mapInstanceRef.current,
+                    });
+                }
             });
 
             console.log('5. 지도가 성공적으로 초기화되었습니다.');
@@ -150,6 +173,14 @@ const ToolsPage = () => {
         <div style={{ padding: '20px', fontFamily: 'sans-serif' }}>
             <UserNav />
             <h1>Google 지도 연동 페이지</h1>
+            {/* 마커 좌표 표시 */}
+            {markerPosition && (
+                <div style={{ marginTop: '10px', padding: '10px', border: '1px solid #eee', borderRadius: '5px' }}>
+                    <p><strong>선택된 위치 좌표:</strong></p>
+                    <p>위도: {markerPosition.lat.toFixed(6)}</p>
+                    <p>경도: {markerPosition.lng.toFixed(6)}</p>
+                </div>
+            )}
             <div style={{ 
                 position: 'relative',
                 width: '800px', 
