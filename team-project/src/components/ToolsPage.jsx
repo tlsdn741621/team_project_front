@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axiosInstance from '../util/axiosInstance';
+import UserNav from "./UserNav";
 
 // --- 상태(Status) 정의 ---
 const STATUS = {
@@ -147,6 +148,7 @@ const ToolsPage = () => {
 
     return (
         <div style={{ padding: '20px', fontFamily: 'sans-serif' }}>
+            <UserNav />
             <h1>Google 지도 연동 페이지</h1>
             <div style={{ 
                 position: 'relative',
