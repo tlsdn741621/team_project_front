@@ -7,8 +7,12 @@ import React, { useState, useEffect } from 'react';
  * @param {function} props.onClose - 패널을 닫는 함수
  * @param {object | null} props.position - 위도(lat)와 경도(lng)를 포함하는 객체
  * @param {function} props.onPositionChange - 좌표를 수동으로 변경했을 때 호출되는 함수
+ * @param {function} props.onPredict - 예측을 실행할 때 호출되는 함수
+ * @param {string | null} props.predictionResult - 예측 결과 텍스트
+ * @param {string | null} props.predictionError - 예측 오류 텍스트
+ * @param {boolean} props.isPredicting - 예측이 진행 중인지 여부
  */
-const CoordinatePanel = ({ isOpen, onClose, position, onPositionChange }) => {
+const CoordinatePanel = ({ isOpen, onClose, position, onPositionChange, onPredict, predictionResult, predictionError, isPredicting }) => {
     const [manualLat, setManualLat] = useState('');
     const [manualLng, setManualLng] = useState('');
     const [magnitude, setMagnitude] = useState(3.0); // 지진 규모 상태 추가
@@ -166,6 +170,42 @@ const CoordinatePanel = ({ isOpen, onClose, position, onPositionChange }) => {
                     />
                 </div>
             </div>
+
+            <hr style={{ margin: '20px 0' }} />
+
+            {/* 예측 실행 버튼 */}
+            <button
+                onClick={() => onPredict({ lat: position?.lat, lng: position?.lng, magnitude, depth })}
+                disabled={!position || isPredicting}
+                style={{
+                    width: '100%',
+                    padding: '12px',
+                    backgroundColor: isPredicting ? '#ccc' : '#ff4500',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '5px',
+                    cursor: !position || isPredicting ? 'not-allowed' : 'pointer',
+                    fontSize: '16px',
+                    fontWeight: 'bold',
+                }}
+            >
+                {isPredicting ? '예측 중...' : '쓰나미 발생 확률 예측'}
+            </button>
+
+            {/* 예측 결과 표시 */}
+            {(predictionResult || predictionError) && (
+                <div style={{
+                    marginTop: '20px',
+                    padding: '15px',
+                    border: `1px solid ${predictionError ? 'red' : '#ddd'}`,
+                    borderRadius: '5px',
+                    backgroundColor: predictionError ? '#ffebe6' : '#f0f8ff',
+                }}>
+                    <h4>예측 결과</h4>
+                    {predictionResult && <p style={{ fontSize: '18px', fontWeight: 'bold', color: '#005a9c' }}>{predictionResult}</p>}
+                    {predictionError && <p style={{ fontSize: '16px', fontWeight: 'bold', color: 'red' }}>{predictionError}</p>}
+                </div>
+            )}
         </div>
     );
 };

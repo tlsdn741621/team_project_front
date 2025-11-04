@@ -26,6 +26,11 @@ const ToolsPage = () => {
     const [markerPosition, setMarkerPosition] = useState(null);
     const [isPanelOpen, setIsPanelOpen] = useState(false); // 패널 상태 추가
 
+    // 예측 관련 상태 추가
+    const [isPredicting, setIsPredicting] = useState(false);
+    const [predictionResult, setPredictionResult] = useState(null);
+    const [predictionError, setPredictionError] = useState(null);
+
     // CoordinatePanel에서 전달된 새 좌표로 마커와 지도를 업데이트하는 함수
     const handlePositionChange = (newPosition) => {
         setMarkerPosition(newPosition);
@@ -45,6 +50,41 @@ const ToolsPage = () => {
                     map: mapInstanceRef.current,
                 });
             }
+        }
+    };
+
+    // 예측 실행 함수
+    const handlePrediction = async (data) => {
+        if (!data.lat || !data.lng) {
+            setPredictionError("위치를 먼저 선택해주세요.");
+            return;
+        }
+
+        setIsPredicting(true);
+        setPredictionResult(null);
+        setPredictionError(null);
+
+        try {
+            // 백엔드의 예측 API 엔드포인트로 요청합니다.
+            // Spring Boot 컨트롤러가 /api/predict/tsunami 와 같은 경로를 가지도록 설정해야 합니다.
+            const response = await axiosInstance.post('/predict/tsunami', {
+                latitude: data.lat,
+                longitude: data.lng,
+                magnitude: data.magnitude,
+                depth: data.depth,
+            });
+
+            // 백엔드에서 받은 예측 결과를 상태에 저장합니다.
+            // 예: { "tsunamiProbability": 0.85 }
+            setPredictionResult(`쓰나미 발생 확률: ${(response.data.tsunamiProbability * 100).toFixed(2)}%`);
+
+        } catch (error) {
+            console.error("예측 API 호출 실패:", error);
+            const errorMessage = error.response?.data?.message || "예측 중 오류가 발생했습니다.";
+            setPredictionError(errorMessage);
+            setPredictionResult(null); // 오류 발생 시 이전 결과 제거
+        } finally {
+            setIsPredicting(false);
         }
     };
 
@@ -222,7 +262,11 @@ const ToolsPage = () => {
                 isOpen={isPanelOpen}
                 onClose={() => setIsPanelOpen(false)}
                 position={markerPosition}
-                onPositionChange={handlePositionChange} // 함수 전달
+                onPositionChange={handlePositionChange}
+                onPredict={handlePrediction}
+                isPredicting={isPredicting}
+                predictionResult={predictionResult}
+                predictionError={predictionError}
             />
 
             <div style={{ 
