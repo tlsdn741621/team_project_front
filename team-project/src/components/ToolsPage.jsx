@@ -76,7 +76,7 @@ const ToolsPage = () => {
 
             // 백엔드에서 받은 예측 결과를 상태에 저장합니다.
             // 예: { "tsunamiProbability": 0.85 }
-            setPredictionResult(`쓰나미 발생 확률: ${(response.data.tsunamiProbability * 100).toFixed(2)}%`);
+            setPredictionResult(`쓰나미 발생 확률: ${response.data.tsunamiProbability.toFixed(2)}%`);
 
         } catch (error) {
             console.error("예측 API 호출 실패:", error);
@@ -254,7 +254,7 @@ const ToolsPage = () => {
                     cursor: 'pointer',
                 }}
             >
-                {isPanelOpen ? '좌표 패널 닫기' : '좌표 패널 열기'}
+                {isPanelOpen ? '시뮬레이션 닫기' : '시뮬레이션 열기'}
             </button>
 
             {/* 좌표 정보 패널 컴포넌트 사용 */}
