@@ -1,10 +1,9 @@
 import React, { useState , useEffect } from "react";
-import {FaUser, FaEnvelope, FaLock, FaSpinner, FaGoogle } from "react-icons/fa";
+import {FaUser, FaLock, FaSpinner, FaGoogle } from "react-icons/fa";
 import { RiKakaoTalkFill } from "react-icons/ri";
 
 import "./Login.css";
 import './Header.css';
-import axios from 'axios';
 import {useNavigate} from "react-router-dom";
 import {useAuth} from "../contexts/AuthContext.jsx";
 import apiClient from '../util/axiosInstance.jsx'

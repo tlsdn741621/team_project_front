@@ -1,7 +1,4 @@
 .user-nav-container {
-  position: fixed;
-  top: 15px;
-  right: 30px;
   display: flex;
   align-items: center;
   z-index: 1000;
@@ -33,6 +30,9 @@
 
 .nav-item {
   margin-left: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .nav-link {
@@ -42,6 +42,8 @@
   transition: all 0.3s ease; /* Smooth transition for all properties */
   padding: 5px 0; /* Add some vertical padding for hover effect */
   position: relative; /* For underline effect */
+  display: inline-block; /* Ensure consistent box model */
+  vertical-align: middle; /* Align text and button vertically */
 }
 
 .nav-link:hover {
@@ -105,4 +107,6 @@
   font: inherit;
   cursor: pointer;
   outline: inherit;
+  line-height: 1.2; /* nav-link의 기본 line-height와 유사하게 설정 */
+  height: auto; /* 내용에 따라 높이 자동 조절 */
 }
