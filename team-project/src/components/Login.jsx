@@ -7,6 +7,7 @@ import './Header.css';
 import {useNavigate} from "react-router-dom";
 import {useAuth} from "../contexts/AuthContext.jsx";
 import apiClient from '../util/axiosInstance.jsx'
+import axios from "axios";
 
 const Login = () => {
     const API_SERVER_HOST = 'http://localhost:8080';
@@ -27,7 +28,7 @@ const Login = () => {
 
                 // eslint-disable-next-line no-unused-vars
             } catch (error) {
-                console.log("유효하지 않은 토큰입니다. 로그인 페이지에 머뭅니다.");
+                // 유효하지 않은 토큰입니다. 로그인 페이지에 머뭅니다. (콘솔 메시지 제거)
             }
         };
         checkLoginStatus();
@@ -80,7 +81,7 @@ const Login = () => {
 
             login({ memberId: form.memberId, userName: userName });
             alert('로그인 성공!');
-            navigate('/toolspage');
+            navigate('/tools page');
         } catch (error) {
             alert('로그인 실패: 아이디 또는 비밀번호를 확인하세요.');
             console.error(error);

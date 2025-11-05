@@ -142,12 +142,14 @@ const Register = () => {
                             value={form.username}
                             onChange={handleChange}
                             className={errors.username ? "input error" : "input"}
+                            style={{ flex: 1, paddingRight: '100px' }} /* 버튼 공간 확보 */
                         />
                         <button
                             type="button"
                             onClick={handleIdCheck}
                             className="check-id-btn"
                             disabled={isLoading || !form.username}
+                            style={{ position: 'absolute', right: '15px', height: 'calc(100% - 10px)', top: '5px' }} /* input-group 안에 배치 */
                         >
                             {idCheckStatus === 'checking' ? <FaSpinner className="spinner" /> : "중복 확인"}
                         </button>

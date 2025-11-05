@@ -80,7 +80,7 @@ const ToolsPage = () => {
         setMarkerPosition(latLng);
 
         if (markerRef.current) {
-            markerRef.current.position = latLng;
+            markerRef.current.setPosition(latLng); // 기존 마커 위치 업데이트
         } else {
             if (mapInstanceRef.current && window.google) {
                 markerRef.current = new window.google.maps.Marker({
