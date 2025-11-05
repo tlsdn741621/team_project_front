@@ -1,7 +1,4 @@
 .user-nav-container {
-  position: fixed;
-  top: 15px;
-  right: 30px;
   display: flex;
   align-items: center;
   z-index: 1000;
