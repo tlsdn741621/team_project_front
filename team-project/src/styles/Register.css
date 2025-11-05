@@ -124,10 +124,10 @@ body::after {
 /* 🔟 아이디 중복 확인 버튼 (수정됨) */
 .check-id-btn {
     padding: 8px 12px;
-    background-color: #6a5acd;
-    color: #333;
+    background-color: #a0a0a0; /* 더 진한 회색 배경 */
+    color: #333; /* 어두운 텍스트 */
     border: none;
-    border-radius: 12px;
+    border-radius: 9999px; /* 완전한 캡슐 형태 */
     font-size: 14px;
     font-weight: bold;
     cursor: pointer;
