@@ -15,15 +15,15 @@ const UserNav = () => {
   return (
     <div className="user-nav-container">
       <span className="welcome-message">
-        Welcome, {userName} 👋
+        환영합니다, {userName}님 👋
       </span>
       <nav className="header-nav">
         <ul className="nav-list">
           <li className="nav-item">
-            <a href="/mypage" className="nav-link">My Page</a>
+            <a href="/mypage" className="nav-link">마이페이지</a>
           </li>
           <li className="nav-item">
-            <button onClick={handleLogout} className="nav-link nav-button-link">Logout</button>
+            <button onClick={handleLogout} className="nav-link nav-button-link">로그아웃</button>
           </li>
         </ul>
       </nav>

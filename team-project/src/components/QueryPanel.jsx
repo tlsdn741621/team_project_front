@@ -2,9 +2,8 @@ import React from 'react';
 
 const QueryPanel = ({
     startDate, setStartDate,
-    endDate, setEndDate,
-    minMagnitude, maxMagnitude,
-    minDepth, maxDepth,
+    magnitude, setMagnitude,
+    depth, setDepth,
     northCoord, setNorthCoord,
     westCoord, setWestCoord,
     eastCoord, setEastCoord,
@@ -18,30 +17,20 @@ const QueryPanel = ({
     return (
         <div className="custom-query-panel">
             <div className="panel-header">
-                <h3>Custom Query</h3>
+                <h3>Prediction</h3>
                 <div className="panel-header-icons">
                     <span>⟳</span>
                     <span>×</span>
                 </div>
             </div>
 
-            {/* Catalog */}
-            <div className="query-field-group">
-                <label>Catalog</label>
-                <div className="query-field-input-container">
-                    <select className="catalog-input">
-                        <option>Auto</option>
-                    </select>
-                </div>
-            </div>
+
 
             {/* Date */}
             <div className="query-field-group">
-                <label>Date</label>
+                <label>Today Date</label>
                 <div className="date-range-group">
-                    <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
-                    <span>-</span>
-                    <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
+                    <input type="text" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
                 </div>
             </div>
 
@@ -49,17 +38,23 @@ const QueryPanel = ({
             <div className="query-field-group">
                 <label>Magnitude</label>
                 <div className="slider-input-wrapper">
-                    <input type="number" value={minMagnitude} readOnly />
-                    <div className="slider-track">
-                        <div
-                            className="slider-fill"
-                            style={{
-                                width: `${((maxMagnitude - minMagnitude) / (10 - 3)) * 100}%`,
-                                marginLeft: `${((minMagnitude - 3) / (10 - 3)) * 100}%`,
-                            }}
-                        ></div>
-                    </div>
-                    <input type="number" value={maxMagnitude} readOnly />
+                    <input 
+                        type="range" 
+                        min="3.0" 
+                        max="9.5" 
+                        step="0.1" 
+                        value={magnitude} 
+                        onChange={(e) => setMagnitude(isNaN(parseFloat(e.target.value)) ? 3.0 : parseFloat(e.target.value))}
+                    />
+                    <input 
+                        type="number" 
+                        min="3.0" 
+                        max="9.5" 
+                        step="0.1" 
+                        value={magnitude} 
+                        onChange={(e) => setMagnitude(isNaN(parseFloat(e.target.value)) ? 3.0 : parseFloat(e.target.value))} 
+                        className="magnitude-display"
+                    />
                 </div>
             </div>
 
@@ -67,17 +62,24 @@ const QueryPanel = ({
             <div className="query-field-group">
                 <label>Depth</label>
                 <div className="slider-input-wrapper">
-                    <input type="number" value={minDepth.toFixed(1)} readOnly />
-                    <div className="slider-track">
-                        <div
-                            className="slider-fill"
-                            style={{
-                                width: `${((maxDepth - minDepth) / 6371) * 100}%`,
-                                marginLeft: `${(minDepth / 6371) * 100}%`,
-                            }}
-                        ></div>
-                    </div>
-                    <input type="number" value={maxDepth} readOnly />
+                    <input 
+                        type="range" 
+                        min="300" 
+                        max="800" 
+                        step="1" 
+                        value={depth} 
+                        onChange={(e) => setDepth(isNaN(parseFloat(e.target.value)) ? 300 : parseFloat(e.target.value))}
+                        className="depth-slider"
+                    />
+                    <input 
+                        type="number" 
+                        min="300" 
+                        max="800" 
+                        step="1" 
+                        value={depth} 
+                        onChange={(e) => setDepth(isNaN(parseFloat(e.target.value)) ? 300 : parseFloat(e.target.value))} 
+                        className="depth-display"
+                    />
                 </div>
             </div>
 
@@ -117,3 +119,4 @@ const QueryPanel = ({
 };
 
 export default QueryPanel;
+// End of QueryPanel.jsx

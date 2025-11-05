@@ -30,7 +30,7 @@ const MapContainer = ({ status, error, mapRef, activeTab, setActiveTab, handleMa
     };
 
     return (
-        <div className="map-container" onClick={handleMapClick}>
+        <div className="map-container">
             <div className="map-tabs">
                 <div className={`map-tab ${activeTab === '지도' ? 'active' : ''}`} onClick={() => setActiveTab('지도')}>지도</div>
                 <div className={`map-tab ${activeTab === '위성' ? 'active' : ''}`} onClick={() => setActiveTab('위성')}>위성</div>

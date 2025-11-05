@@ -18,7 +18,7 @@ const STATUS = {
     ERROR: 'error',
 };
 
-// const EARTHSCOPE_LOGO_URL = 'https://via.placeholder.com/30x30?text=ES';
+
 
 /**
  * 최종 이미지와 동일한 UI를 구현하는 페이지 컴포넌트
@@ -32,12 +32,11 @@ const ToolsPage = () => {
 
     // --- Custom Query 패널 관련 상태 (이미지의 날짜로 초기화) ---
     const [markerPosition, setMarkerPosition] = useState(null);
-    const [startDate, setStartDate] = useState('2025-10-06');
-    const [endDate, setEndDate] = useState('2025-11-05');
-    const [minMagnitude] = useState(3); // Magnutide와 Depth는 읽기 전용으로 설정
-    const [maxMagnitude] = useState(10);
+    const [startDate, setStartDate] = useState(new Date().toISOString().slice(0, 10));
+    const [magnitude, setMagnitude] = useState(6.0);
     const [minDepth] = useState(0.0);
     const [maxDepth] = useState(6371); // 지구 깊이 km
+    const [depth, setDepth] = useState(500);
 
     // Location 필드 상태
     const [northCoord, setNorthCoord] = useState('');
@@ -52,7 +51,25 @@ const ToolsPage = () => {
     const [showHistoryPopover, setShowHistoryPopover] = useState(false);
     const [historyPopoverTarget, setHistoryPopoverTarget] = useState(null);
     const historyLinkRef = useRef(null);
-    const [queryHistory, setQueryHistory] = useState([]);
+    const [queryHistory, setQueryHistory] = useState(() => {
+        const savedHistory = localStorage.getItem('queryHistory');
+        return savedHistory ? JSON.parse(savedHistory) : [];
+    });
+
+    useEffect(() => {
+        localStorage.setItem('queryHistory', JSON.stringify(queryHistory));
+    }, [queryHistory]);
+
+    // activeTab 변경 시 지도 유형 변경
+    useEffect(() => {
+        if (mapInstanceRef.current && window.google) {
+            if (activeTab === '지도') {
+                mapInstanceRef.current.setMapTypeId(window.google.maps.MapTypeId.ROADMAP);
+            } else if (activeTab === '위성') {
+                mapInstanceRef.current.setMapTypeId(window.google.maps.MapTypeId.SATELLITE);
+            }
+        }
+    }, [activeTab]);
 
     // 지도 클릭 시 마커 위치 업데이트
     const handleMapClick = (e) => {
@@ -63,7 +80,7 @@ const ToolsPage = () => {
         setMarkerPosition(latLng);
 
         if (markerRef.current) {
-            markerRef.current.setPosition(latLng);
+            markerRef.current.position = latLng;
         } else {
             if (mapInstanceRef.current && window.google) {
                 markerRef.current = new window.google.maps.Marker({
@@ -94,8 +111,8 @@ const ToolsPage = () => {
             const response = await axiosInstance.post('/predict/tsunami', {
                 latitude: markerPosition.lat,
                 longitude: markerPosition.lng,
-                magnitude: maxMagnitude,
-                depth: maxDepth,
+                magnitude: magnitude,
+                depth: depth,
             });
 
             const result = `${response.data.tsunamiProbability.toFixed(2)}%`;
@@ -120,11 +137,11 @@ const ToolsPage = () => {
     const handleGetEvents = () => {
         const queryParams = {
             startDate,
-            endDate,
-            minMagnitude,
-            maxMagnitude,
-            minDepth,
-            maxDepth,
+            minMagnitude: magnitude, // magnitude를 minMagnitude로 사용
+            maxMagnitude: magnitude, // magnitude를 maxMagnitude로 사용
+            minDepth, // 기존 minDepth 사용
+            maxDepth, // 기존 maxDepth 사용
+            depth,
             northCoord,
             westCoord,
             eastCoord,
@@ -167,7 +184,7 @@ const ToolsPage = () => {
 
             const script = document.createElement('script');
             script.id = 'google-maps-script';
-            script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&callback=initMap`;
+            script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&callback=initMap&libraries=marker&loading=async`;
             script.async = true;
             script.defer = true;
             script.onerror = () => {
@@ -191,7 +208,6 @@ const ToolsPage = () => {
                 zoom: 6,
                 disableDefaultUI: true,
                 zoomControl: true,
-                mapId: 'DEMO_MAP_ID'
             });
 
             mapInstanceRef.current.addListener('click', handleMapClick);
@@ -257,9 +273,8 @@ const ToolsPage = () => {
                 />
                 <QueryPanel 
                     startDate={startDate} setStartDate={setStartDate}
-                    endDate={endDate} setEndDate={setEndDate}
-                    minMagnitude={minMagnitude} maxMagnitude={maxMagnitude}
-                    minDepth={minDepth} maxDepth={maxDepth}
+                    magnitude={magnitude} setMagnitude={setMagnitude}
+                    depth={depth} setDepth={setDepth}
                     northCoord={northCoord} setNorthCoord={setNorthCoord}
                     westCoord={westCoord} setWestCoord={setWestCoord}
                     eastCoord={eastCoord} setEastCoord={setEastCoord}
@@ -277,3 +292,4 @@ const ToolsPage = () => {
 };
 
 export default ToolsPage;
+// End of ToolsPage.jsx

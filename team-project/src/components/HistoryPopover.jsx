@@ -15,10 +15,9 @@ const HistoryPopover = ({ show, target, queryHistory }) => {
                         queryHistory.map((query, index) => (
                             <div key={index} className="history-item">
                                 <p><strong>Query {index + 1}:</strong></p>
-                                <p><strong>Start Date:</strong> {query.startDate}</p>
-                                <p><strong>End Date:</strong> {query.endDate}</p>
-                                <p><strong>Magnitude:</strong> {query.minMagnitude} - {query.maxMagnitude}</p>
-                                <p><strong>Depth:</strong> {query.minDepth} - {query.maxDepth}</p>
+                                <p><strong>Date:</strong> {query.startDate}</p>
+                                <p><strong>Magnitude:</strong> {query.minMagnitude}</p>
+                                <p><strong>Depth:</strong> {query.depth}</p>
                                 <p><strong>Latitude:</strong> {query.northCoord}</p>
                                 <p><strong>Longitude:</strong> {query.westCoord}</p>
                                 <p><strong>Prediction:</strong> {query.predictionResult}</p>
