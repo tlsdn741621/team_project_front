@@ -54,7 +54,7 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
-    navigate('/login');
+    navigate('/');
   };
 
   // 사용자 정보를 가져오는 동안 로딩 화면을 보여줄 수 있습니다.

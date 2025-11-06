@@ -60,24 +60,24 @@ const QueryPanel = ({
 
             {/* Depth */}
             <div className="query-field-group">
-                <label>깊이</label>
+                <label>해저 깊이</label>
                 <div className="slider-input-wrapper">
                     <input 
                         type="range" 
-                        min="300" 
-                        max="800" 
+                        min="10" 
+                        max="700" 
                         step="1" 
                         value={depth} 
-                        onChange={(e) => setDepth(isNaN(parseFloat(e.target.value)) ? 300 : parseFloat(e.target.value))}
+                        onChange={(e) => setDepth(isNaN(parseFloat(e.target.value)) ? 10 : parseFloat(e.target.value))}
                         className="depth-slider"
                     />
                     <input 
                         type="number" 
-                        min="300" 
-                        max="800" 
+                        min="10" 
+                        max="700" 
                         step="1" 
                         value={depth} 
-                        onChange={(e) => setDepth(isNaN(parseFloat(e.target.value)) ? 300 : parseFloat(e.target.value))} 
+                        onChange={(e) => setDepth(isNaN(parseFloat(e.target.value)) ? 10 : parseFloat(e.target.value))} 
                         className="depth-display"
                     />
                 </div>

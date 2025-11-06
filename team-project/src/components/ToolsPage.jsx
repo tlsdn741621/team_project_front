@@ -8,6 +8,7 @@ import PageInfo from './PageInfo.jsx';
 import MapContainer from './MapContainer.jsx';
 import QueryPanel from './QueryPanel.jsx';
 import HistoryPopover from './HistoryPopover.jsx';
+import EarthquakeModal from './EarthquakeModal.jsx';
 import { useAuth } from '../contexts/AuthContext.jsx';
 
 // --- 상태(Status) 정의 ---
@@ -259,12 +260,15 @@ const ToolsPage = () => {
         );
     };
 
+    const [showEarthquakeModal, setShowEarthquakeModal] = useState(false);
+
     return (
         <div className="tools-page-container">
             <Header />
             <PageInfo 
                 historyLinkRef={historyLinkRef} 
                 handleShowHistory={(e) => { e.preventDefault(); setHistoryPopoverTarget(e.target); setShowHistoryPopover(!showHistoryPopover); }}
+                setShowEarthquakeModal={setShowEarthquakeModal}
             />
             <div className="main-content-wrapper">
                 <MapContainer 
@@ -291,6 +295,7 @@ const ToolsPage = () => {
                 />
             </div>
             <HistoryPopover show={showHistoryPopover} target={historyPopoverTarget} queryHistory={queryHistory} />
+            <EarthquakeModal show={showEarthquakeModal} onHide={() => setShowEarthquakeModal(false)} />
         </div>
     );
 };

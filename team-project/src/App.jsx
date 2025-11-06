@@ -19,7 +19,7 @@ function App() {
                 <Route path="/home" element={<Home />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/login" element={<Login />} />
-                <Route index element={<HomePageTest />} />
+                <Route index element={<Home />} />
                 <Route path="/toolspage" element={<ToolsPage />} />
                 <Route path="/mypage" element={<MyPage />} />
                 <Route path="/predict" element={<Prediction />} />

@@ -4,7 +4,7 @@ import { FaUser, FaEnvelope, FaLock, FaIdBadge } from 'react-icons/fa'; // ÏïÑÏù
 import { TbDatabaseSearch } from "react-icons/tb";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPersonDrowning } from '@fortawesome/free-solid-svg-icons';
-import SAGE_LOGO_URL from '../image/img.png';
+
 import './Header.css';
 import { Link } from 'react-router-dom';
 import {useAuth} from "../contexts/AuthContext.jsx";

@@ -1,5 +1,5 @@
 import React from 'react';
-import SAGE_LOGO_URL from '../image/img.png';
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowsRotate, faPersonDrowning } from '@fortawesome/free-solid-svg-icons';
 import UserNav from './UserNav.jsx';

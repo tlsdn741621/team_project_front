@@ -42,8 +42,7 @@
     display: flex;
     align-items: center;
     gap: 15px;
-}
-
+}
 .logo-group {
     display: flex;
     align-items: flex-start;
@@ -407,3 +406,4 @@
     margin-top: 5px;
     transition: opacity 0.3s ease;
 }
+
