@@ -347,7 +347,7 @@
 .location-input-grid {
     display: grid;
     /* N, S 라벨을 상하에, W/E 라벨을 좌우에 배치하는 3열 그리드 */
-    grid-template-columns: 20px 1fr 20px;
+    grid-template-columns: 10px 1fr 10px;
     gap: 5px;
     align-items: center;
     text-align: center;
