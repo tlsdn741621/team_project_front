@@ -17,7 +17,7 @@ const QueryPanel = ({
     return (
         <div className="custom-query-panel">
             <div className="panel-header">
-                <h3>Prediction</h3>
+                <h3>예측</h3>
                 <div className="panel-header-icons">
                     <span>⟳</span>
                     <span>×</span>
@@ -28,7 +28,7 @@ const QueryPanel = ({
 
             {/* Date */}
             <div className="query-field-group">
-                <label>Today Date</label>
+                <label>오늘 날짜</label>
                 <div className="date-range-group">
                     <input type="text" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
                 </div>
@@ -36,7 +36,7 @@ const QueryPanel = ({
 
             {/* Magnitude */}
             <div className="query-field-group">
-                <label>Magnitude</label>
+                <label>지진 규모</label>
                 <div className="slider-input-wrapper">
                     <input 
                         type="range" 
@@ -60,24 +60,24 @@ const QueryPanel = ({
 
             {/* Depth */}
             <div className="query-field-group">
-                <label>Depth</label>
+                <label>해저 깊이</label>
                 <div className="slider-input-wrapper">
                     <input 
                         type="range" 
-                        min="300" 
-                        max="800" 
+                        min="10" 
+                        max="700" 
                         step="1" 
                         value={depth} 
-                        onChange={(e) => setDepth(isNaN(parseFloat(e.target.value)) ? 300 : parseFloat(e.target.value))}
+                        onChange={(e) => setDepth(isNaN(parseFloat(e.target.value)) ? 10 : parseFloat(e.target.value))}
                         className="depth-slider"
                     />
                     <input 
                         type="number" 
-                        min="300" 
-                        max="800" 
+                        min="10" 
+                        max="700" 
                         step="1" 
                         value={depth} 
-                        onChange={(e) => setDepth(isNaN(parseFloat(e.target.value)) ? 300 : parseFloat(e.target.value))} 
+                        onChange={(e) => setDepth(isNaN(parseFloat(e.target.value)) ? 10 : parseFloat(e.target.value))} 
                         className="depth-display"
                     />
                 </div>
@@ -85,13 +85,13 @@ const QueryPanel = ({
 
             {/* Location */}
             <div className="query-field-group">
-                <label>Location</label>
+                <label>위치</label>
                 <div className="location-input-grid">
                     <span className="location-label-n">N</span>
-                    <input type="text" placeholder="Lat" value={northCoord} onChange={(e) => setNorthCoord(e.target.value)} className="input-lat-n" />
+                    <input type="text" placeholder="위도" value={northCoord} onChange={(e) => setNorthCoord(e.target.value)} className="input-lat-n" />
 
                     <span className="location-label-w">W</span>
-                    <input type="text" placeholder="Lon" value={westCoord} onChange={(e) => setWestCoord(e.target.value)} className="input-lon" />
+                    <input type="text" placeholder="경도" value={westCoord} onChange={(e) => setWestCoord(e.target.value)} className="input-lon" />
                     <span className="location-label-e">E</span>
 
                     <span className="location-label-s">S</span>
@@ -104,7 +104,7 @@ const QueryPanel = ({
                 onClick={handleGetEvents}
                 disabled={isPredicting || status !== 'ready'}
             >
-                {isPredicting ? '로딩 중...' : 'Get Events'}
+                {isPredicting ? '로딩 중...' : '결과 보기'}
             </button>
 
             {/* Prediction Result (기능 유지를 위해 남겨둠) */}

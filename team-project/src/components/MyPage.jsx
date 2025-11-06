@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import './MyPage.css'; // CSS 파일 임포트
 import { FaUser, FaEnvelope, FaLock, FaIdBadge } from 'react-icons/fa'; // 아이콘 추가
 import { TbDatabaseSearch } from "react-icons/tb";
-import SAGE_LOGO_URL from '../image/img.png';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPersonDrowning } from '@fortawesome/free-solid-svg-icons';
+
 import './Header.css';
 import { Link } from 'react-router-dom';
 import {useAuth} from "../contexts/AuthContext.jsx";
@@ -76,7 +78,7 @@ const MyPage = () => {
     return (
         <div className="login-container">
             <Link to="/toolspage" style={{ textDecoration: 'none', color: 'inherit' }}>
-              <h1 className="project-title" style={{paddingBottom: '20px'}}><img src={SAGE_LOGO_URL} alt="Tsunami Prediction Logo" style={{ height: '24px', marginRight: '8px', verticalAlign: 'middle' }} /> Tsunami Prediction</h1>
+              <h1 className="project-title" style={{paddingBottom: '20px'}}><FontAwesomeIcon icon={faPersonDrowning} style={{ height: '24px', marginRight: '8px', verticalAlign: 'middle' }} /> Tsunami Prediction</h1>
             </Link>
             <div className="login-box">
                 <h1 className="login-title">마이페이지</h1>

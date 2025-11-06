@@ -3,11 +3,13 @@ import axiosInstance from '../util/axiosInstance';
 import './ToolsPage.css'; // 새로 작성할 CSS 파일 import
 
 
-import Header from './Header.jsx';
+import { Header } from './Header.jsx';
 import PageInfo from './PageInfo.jsx';
 import MapContainer from './MapContainer.jsx';
 import QueryPanel from './QueryPanel.jsx';
 import HistoryPopover from './HistoryPopover.jsx';
+import EarthquakeModal from './EarthquakeModal.jsx';
+import { useAuth } from '../contexts/AuthContext.jsx';
 
 // --- 상태(Status) 정의 ---
 const STATUS = {
@@ -51,14 +53,17 @@ const ToolsPage = () => {
     const [showHistoryPopover, setShowHistoryPopover] = useState(false);
     const [historyPopoverTarget, setHistoryPopoverTarget] = useState(null);
     const historyLinkRef = useRef(null);
+    const { user } = useAuth();
+    const historyKey = user ? `queryHistory_${user.memberId}` : 'queryHistory_guest';
+
     const [queryHistory, setQueryHistory] = useState(() => {
-        const savedHistory = localStorage.getItem('queryHistory');
+        const savedHistory = localStorage.getItem(historyKey);
         return savedHistory ? JSON.parse(savedHistory) : [];
     });
 
     useEffect(() => {
-        localStorage.setItem('queryHistory', JSON.stringify(queryHistory));
-    }, [queryHistory]);
+        localStorage.setItem(historyKey, JSON.stringify(queryHistory));
+    }, [queryHistory, historyKey]);
 
     // activeTab 변경 시 지도 유형 변경
     useEffect(() => {
@@ -255,12 +260,15 @@ const ToolsPage = () => {
         );
     };
 
+    const [showEarthquakeModal, setShowEarthquakeModal] = useState(false);
+
     return (
         <div className="tools-page-container">
             <Header />
             <PageInfo 
                 historyLinkRef={historyLinkRef} 
                 handleShowHistory={(e) => { e.preventDefault(); setHistoryPopoverTarget(e.target); setShowHistoryPopover(!showHistoryPopover); }}
+                setShowEarthquakeModal={setShowEarthquakeModal}
             />
             <div className="main-content-wrapper">
                 <MapContainer 
@@ -287,6 +295,7 @@ const ToolsPage = () => {
                 />
             </div>
             <HistoryPopover show={showHistoryPopover} target={historyPopoverTarget} queryHistory={queryHistory} />
+            <EarthquakeModal show={showEarthquakeModal} onHide={() => setShowEarthquakeModal(false)} />
         </div>
     );
 };

@@ -81,7 +81,7 @@ const Login = () => {
 
             login({ memberId: form.memberId, userName: userName });
             alert('로그인 성공!');
-            navigate('/tools page');
+            navigate('/toolspage');
         } catch (error) {
             alert('로그인 실패: 아이디 또는 비밀번호를 확인하세요.');
             console.error(error);
