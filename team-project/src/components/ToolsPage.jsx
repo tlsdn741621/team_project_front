@@ -49,6 +49,7 @@ const ToolsPage = () => {
     const [isPredicting, setIsPredicting] = useState(false);
     const [predictionResult, setPredictionResult] = useState(null);
     const [predictionError, setPredictionError] = useState(null);
+    const [isSteepSlope, setIsSteepSlope] = useState(null);
     const [activeTab, setActiveTab] = useState('지도');
     const [showHistoryPopover, setShowHistoryPopover] = useState(false);
     const [historyPopoverTarget, setHistoryPopoverTarget] = useState(null);
@@ -111,17 +112,21 @@ const ToolsPage = () => {
         setIsPredicting(true);
         setPredictionResult(null);
         setPredictionError(null);
+        setIsSteepSlope(null);
 
         try {
-            const response = await axiosInstance.post('/predict/tsunami', {
+            const payload = {
                 latitude: markerPosition.lat,
                 longitude: markerPosition.lng,
                 magnitude: magnitude,
-                depth: depth,
-            });
+                depth: Math.round(depth),
+            };
+            console.log('Sending prediction request with payload:', payload); // Log the payload
+            const response = await axiosInstance.post('/predict/tsunami', payload);
 
             const result = `${response.data.tsunamiProbability.toFixed(2)}%`;
             setPredictionResult(result);
+            setIsSteepSlope(response.data.isSteepSlope);
 
             const historyEntry = { ...queryParams, predictionResult: result };
             setQueryHistory(prevHistory => [
@@ -292,6 +297,7 @@ const ToolsPage = () => {
                     status={status}
                     predictionResult={predictionResult}
                     predictionError={predictionError}
+                    isSteepSlope={isSteepSlope}
                 />
             </div>
             <HistoryPopover show={showHistoryPopover} target={historyPopoverTarget} queryHistory={queryHistory} />

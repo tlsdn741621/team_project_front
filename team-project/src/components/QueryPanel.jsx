@@ -12,7 +12,8 @@ const QueryPanel = ({
     isPredicting,
     status,
     predictionResult,
-    predictionError
+    predictionError,
+    isSteepSlope
 }) => {
     return (
         <div className="custom-query-panel">
@@ -105,7 +106,12 @@ const QueryPanel = ({
 
             {/* Prediction Result (기능 유지를 위해 남겨둠) */}
             {predictionResult && (
-                <p className="prediction-message prediction-success">{predictionResult}</p>
+                <p className="prediction-message prediction-success">쓰나미 예측 확률: {predictionResult}</p>
+            )}
+            {isSteepSlope !== null && (
+                <p className="prediction-message prediction-info">
+                    {isSteepSlope === 1 ? "근처에 해저산이 있습니다." : "근처에 해저산이 없습니다."}
+                </p>
             )}
             {predictionError && (
                 <p className="prediction-message prediction-error">{predictionError}</p>
