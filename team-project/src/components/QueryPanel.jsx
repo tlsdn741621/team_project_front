@@ -18,10 +18,6 @@ const QueryPanel = ({
         <div className="custom-query-panel">
             <div className="panel-header">
                 <h3>예측</h3>
-                <div className="panel-header-icons">
-                    <span>⟳</span>
-                    <span>×</span>
-                </div>
             </div>
 
 
