@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useCallback} from 'react';
-import axios from 'axios';
+import axiosInstance from '../util/axiosInstance';
 import '../styles/PageInfo.css'
 
 const PageInfo = ({ historyLinkRef, handleShowHistory, setShowEarthquakeModal }) => {
@@ -11,15 +11,11 @@ const PageInfo = ({ historyLinkRef, handleShowHistory, setShowEarthquakeModal })
     const fetchData = useCallback(async () => {
         // setIsLoading(true);
         try {
-            const response = await axios.get('/api/earthquake/realtime');
+            const response = await axiosInstance.get('/earthquake/realtime');
             let parsedData = null;
 
             if (response.data) {
-                try {
-                    parsedData = JSON.parse(response.data);
-                } catch (e) {
-                    console.error("JSON 파싱 오류:", e, response.data);
-                }
+                parsedData = response.data;
             }
             if (parsedData && Array.isArray(parsedData) && parsedData.length > 0) {
                 setEarthquakeData(parsedData[0]);

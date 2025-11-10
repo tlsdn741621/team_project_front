@@ -54,17 +54,10 @@ const ToolsPage = () => {
     const [showHistoryPopover, setShowHistoryPopover] = useState(false);
     const [historyPopoverTarget, setHistoryPopoverTarget] = useState(null);
     const historyLinkRef = useRef(null);
-    const { user } = useAuth();
-    const historyKey = user ? `queryHistory_${user.memberId}` : 'queryHistory_guest';
+    const { user } = useAuth(); // Get user from AuthContext
+    // const historyKey = user ? `queryHistory_${user.memberId}` : 'queryHistory_guest'; // No longer needed for local storage
 
-    const [queryHistory, setQueryHistory] = useState(() => {
-        const savedHistory = localStorage.getItem(historyKey);
-        return savedHistory ? JSON.parse(savedHistory) : [];
-    });
-
-    useEffect(() => {
-        localStorage.setItem(historyKey, JSON.stringify(queryHistory));
-    }, [queryHistory, historyKey]);
+    const [queryHistory, setQueryHistory] = useState([]);
 
     // activeTab 변경 시 지도 유형 변경
     useEffect(() => {
@@ -76,6 +69,40 @@ const ToolsPage = () => {
             }
         }
     }, [activeTab]);
+
+    // Function to fetch history from backend
+    const fetchHistory = async () => {
+        try {
+            // Only fetch if a user is logged in
+            if (user && user.memberId) { // Ensure user object and memberId exist
+                const response = await axiosInstance.get('/history');
+                if (Array.isArray(response.data)) {
+                    setQueryHistory(response.data);
+                } else {
+                    console.error("백엔드에서 유효하지 않은 기록 데이터 형식 수신:", response.data);
+                    setQueryHistory([]);
+                }
+            } else {
+                // If no user is logged in, clear history
+                setQueryHistory([]);
+            }
+        } catch (error) {
+            // Handle 401 Unauthorized specifically if needed, otherwise general error
+            if (error.response && error.response.status === 401) {
+                console.log("인증되지 않은 사용자입니다. 기록을 가져올 수 없습니다.");
+                setQueryHistory([]);
+            } else {
+                console.error("기록 데이터를 가져오는 중 오류 발생:", error);
+                setQueryHistory([]);
+            }
+        }
+    };
+
+    // Fetch history when component mounts or when 'user' object changes
+    useEffect(() => {
+        fetchHistory();
+    }, [user]); // Dependency array now includes 'user'
+
 
     // 지도 클릭 시 마커 위치 업데이트
     const handleMapClick = (e) => {
@@ -128,11 +155,26 @@ const ToolsPage = () => {
             setPredictionResult(result);
             setIsSteepSlope(response.data.isSteepSlope);
 
-            const historyEntry = { ...queryParams, predictionResult: result };
-            setQueryHistory(prevHistory => [
-                historyEntry,
-                ...prevHistory
-            ].slice(0, 10));
+            const historyEntry = {
+                startDate: queryParams.startDate,
+                minMagnitude: queryParams.minMagnitude,
+                depth: queryParams.depth,
+                northCoord: queryParams.northCoord,
+                westCoord: queryParams.westCoord,
+                predictionResult: result
+                // memberId is NOT sent from frontend, backend will get it from security context
+            };
+
+            try {
+                await axiosInstance.post('/history', historyEntry);
+                // After successful save, re-fetch history to get the latest,
+                // or optimistically update if the backend returns the saved entry
+                // For simplicity and accuracy, re-fetching is safer here.
+                fetchHistory(); // Re-fetch to get the updated list from backend
+            } catch (historySaveError) {
+                console.error("기록 저장 중 오류 발생:", historySaveError);
+                // 사용자에게 기록 저장 실패를 알리거나 다른 처리를 할 수 있습니다.
+            }
 
         } catch (error) {
             const errorMessage = error.response?.data?.message || "예측 중 오류가 발생했습니다.";
@@ -235,7 +277,7 @@ const ToolsPage = () => {
                 delete window.initMap;
             }
         };
-    }, []);
+    }, []); // This useEffect is for Google Maps API key and script loading, should not depend on 'user'
 
 
     const StatusOverlay = () => {
@@ -270,21 +312,21 @@ const ToolsPage = () => {
     return (
         <div className="tools-page-container">
             <Header />
-            <PageInfo 
-                historyLinkRef={historyLinkRef} 
+            <PageInfo
+                historyLinkRef={historyLinkRef}
                 handleShowHistory={(e) => { e.preventDefault(); setHistoryPopoverTarget(e.target); setShowHistoryPopover(!showHistoryPopover); }}
                 setShowEarthquakeModal={setShowEarthquakeModal}
             />
             <div className="main-content-wrapper">
-                <MapContainer 
+                <MapContainer
                     status={status}
                     error={error}
-                    mapRef={mapRef} 
-                    activeTab={activeTab} 
-                    setActiveTab={setActiveTab} 
-                    handleMapClick={handleMapClick} 
+                    mapRef={mapRef}
+                    activeTab={activeTab}
+                    setActiveTab={setActiveTab}
+                    handleMapClick={handleMapClick}
                 />
-                <QueryPanel 
+                <QueryPanel
                     startDate={startDate} setStartDate={setStartDate}
                     magnitude={magnitude} setMagnitude={setMagnitude}
                     depth={depth} setDepth={setDepth}
@@ -307,4 +349,3 @@ const ToolsPage = () => {
 };
 
 export default ToolsPage;
-// End of ToolsPage.jsx
