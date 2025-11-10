@@ -34,6 +34,10 @@ const PageInfo = ({ historyLinkRef, handleShowHistory, setShowEarthquakeModal })
         }
     }, []);
 
+    useEffect(() => {
+        fetchData();
+    }, [fetchData]);
+
     // 1초마다 타이머 감소 (이전과 동일)
     useEffect(() => {
         if (!isLoading) {
