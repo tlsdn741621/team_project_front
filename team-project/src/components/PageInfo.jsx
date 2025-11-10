@@ -9,11 +9,20 @@ const PageInfo = ({ historyLinkRef, handleShowHistory, setShowEarthquakeModal })
     const [earthquakeData, setEarthquakeData] = useState(null);
 
     const fetchData = useCallback(async () => {
-        setIsLoading(true);
+        // setIsLoading(true);
         try {
-            const response = await axios.get('/api/earthquake/realtime'); // ◀ 실제 API URL로 변경
-            if (response.data && response.data.latitude) {
-                setEarthquakeData(response.data);
+            const response = await axios.get('/api/earthquake/realtime');
+            let parsedData = null;
+
+            if (response.data) {
+                try {
+                    parsedData = JSON.parse(response.data);
+                } catch (e) {
+                    console.error("JSON 파싱 오류:", e, response.data);
+                }
+            }
+            if (parsedData && Array.isArray(parsedData) && parsedData.length > 0) {
+                setEarthquakeData(parsedData[0]);
             } else {
                 setEarthquakeData(null);
             }
@@ -21,7 +30,7 @@ const PageInfo = ({ historyLinkRef, handleShowHistory, setShowEarthquakeModal })
             console.error("실시간 지진 데이터 요청 오류:", err);
             setEarthquakeData(null);
         } finally {
-            setIsLoading(false);
+            // setIsLoading(false);
         }
     }, []);
 
