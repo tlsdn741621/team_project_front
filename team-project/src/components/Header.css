@@ -1,0 +1,82 @@
+.main-header {
+    display: flex;
+    justify-content: center; /* Center content horizontally */
+    align-items: center;     /* Center content vertically */
+    padding-top: 80px;
+    padding-bottom: 10px;
+    background-color: transparent;
+    font-family: Arial, sans-serif;
+    position: relative;
+}
+
+.project-title {
+    margin: 0;
+    font-size: 48px;
+    color: #1a2b3c;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5), 4px 4px 6px rgba(0, 0, 0, 0.3);
+    /* Absolute positioning removed */
+}
+
+.header-right {
+    position: absolute;
+    top: 15px; /* Adjust as needed */
+    right: 30px; /* Adjust as needed */
+    display: flex; /* Added back */
+    align-items: center; /* Added back */
+}
+
+.welcome-message {
+    margin-right: 20px;
+    color: #555;
+    font-size: 16px;
+}
+
+.header-nav {
+    /* No specific styles needed here, as it's a simple container */
+}
+
+.nav-list {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-item {
+    margin-left: 20px;
+}
+
+.nav-link {
+    text-decoration: none;
+    color: #007bff; /* Link color */
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+
+.nav-link:hover {
+    color: #0056b3; /* Hover effect */
+}
+
+ @media (max-width: 768px) {
+    .project-title {
+        font-size: 24px; /* 화면이 작아졌을 때 폰트 크기 줄임 */
+        position: static; /* static으로 변경하여 다른 요소들과 자연스럽게 배치 */
+        transform: none; /* transform 제거 */
+        text-align: center; /* 가운데 정렬 */
+        width: 100%; /* 전체 너비 차지 */
+        order: 1; /* 로고를 첫 번째 순서로 배치 */
+    }
+
+    .main-header {
+        flex-direction: column; /* 요소들을 세로로 정렬 */
+        padding: 20px 15px; /* 패딩 줄임 */
+    }
+
+    .header-right {
+        position: static; /* static으로 변경 */
+        margin-top: 15px; /* 제목과의 간격 추가 */
+        order: 2; /* 사용자 네비게이션을 두 번째 순서로 배치 */
+    }
+}

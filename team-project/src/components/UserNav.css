@@ -1,0 +1,112 @@
+.user-nav-container {
+  display: flex;
+  align-items: center;
+  z-index: 1000;
+  /* Aesthetic additions */
+  background-color: rgba(255, 255, 255, 0.9); /* Slightly transparent white background */
+  padding: 10px 20px; /* Add some padding */
+  border-radius: 8px; /* Rounded corners */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+.welcome-message {
+  margin-right: 20px;
+  color: #333; /* Darker text for better contrast */
+  font-size: 17px; /* Slightly larger font */
+  font-weight: 600; /* Bolder */
+  letter-spacing: 0.5px; /* A little spacing */
+}
+
+.header-nav {
+  /* No specific styles needed here, as it's a simple container */
+}
+
+.nav-list {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-item {
+  margin-left: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-link {
+  text-decoration: none;
+  color: #4f46e5; /* A modern blue/purple, similar to the icon */
+  font-weight: 600; /* Bolder links */
+  transition: all 0.3s ease; /* Smooth transition for all properties */
+  padding: 5px 0; /* Add some vertical padding for hover effect */
+  position: relative; /* For underline effect */
+  display: inline-block; /* Ensure consistent box model */
+  vertical-align: middle; /* Align text and button vertically */
+}
+
+.nav-link:hover {
+  color: #382fbb; /* Darker shade on hover */
+  /* Optional: Underline effect on hover */
+  /* &::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    background-color: #382fbb;
+    bottom: 0;
+    left: 0;
+    transform: scaleX(0);
+    transform-origin: bottom right;
+    transition: transform 0.25s ease-out;
+  } */
+}
+
+/* .nav-link:hover::after {
+  transform: scaleX(1);
+  transform-origin: bottom left;
+} */
+
+
+/* Responsive adjustments */
+ @media (max-width: 768px) {
+  .user-nav-container {
+    flex-direction: column;
+    top: 10px;
+    right: 10px;
+    align-items: flex-end;
+    padding: 8px 15px; /* Adjust padding for smaller screens */
+  }
+
+  .welcome-message {
+    margin-right: 0;
+    margin-bottom: 8px; /* Slightly less margin */
+    font-size: 15px; /* Slightly smaller font */
+  }
+
+  .nav-list {
+    flex-direction: column;
+    align-items: flex-end;
+  }
+
+  .nav-item {
+    margin-left: 0;
+    margin-top: 8px; /* Slightly less margin */
+  }
+
+  .nav-link {
+    padding: 3px 0; /* Adjust padding for smaller screens */
+  }
+}
+
+.nav-button-link {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+  outline: inherit;
+  line-height: 1.2; /* nav-link의 기본 line-height와 유사하게 설정 */
+  height: auto; /* 내용에 따라 높이 자동 조절 */
+}

@@ -1,0 +1,47 @@
+/* ... (이전 CSS 스타일들) ... */
+
+/* * 기존의 .realtime-timer 스타일은 삭제합니다.
+ *
+.realtime-timer {
+    font-size: 0.8em;
+    color: #999;
+    margin-top: 5px;
+}
+*/
+
+/* === ⬇️ 새로 추가할 스타일 ⬇️ === */
+
+/* 타이머 텍스트와 프로그레스 바를 감싸는 컨테이너 */
+.timer-container {
+    width: 100%; /* 패널 너비에 맞춤 */
+    margin-top: 8px; /* 위쪽 콘텐츠와의 간격 */
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* 텍스트와 바를 중앙 정렬 */
+}
+
+/* "다음 갱신까지: 01:35" 텍스트 스타일 */
+.timer-text {
+    font-size: 0.9em;
+    color: #777;
+    margin-bottom: 5px;
+}
+
+/* 프로그레스 바의 배경 (트랙) */
+.progress-bar-track {
+    width: 90%; /* 패널 너비의 90% */
+    height: 6px;
+    background-color: #e9ecef; /* 연한 회색 */
+    border-radius: 3px;
+    overflow: hidden; /* fill이 밖으로 나가지 않도록 */
+}
+
+/* 프로그레스 바의 채워지는 부분 (파란색 바) */
+.progress-bar-fill {
+    height: 100%;
+    background-color: #007bff; /* 원하는 색상으로 변경하세요 */
+    border-radius: 3px;
+
+    /* 바가 1초마다 부드럽게 움직이도록 transition 추가 */
+    transition: width 0.5s ease-out;
+}

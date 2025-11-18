@@ -1,0 +1,297 @@
+/* 1️⃣ HTML, BODY 초기화 */
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    overflow: hidden;
+    position: relative;
+    background-color: transparent;
+}
+
+/* 2️⃣ 전체 배경 */
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: url('https://images.unsplash.com/photo-1508780709619-79562169bc64?auto=format&fit=crop&w=1350&q=80') no-repeat center center;
+    background-size: cover;
+    opacity: 0.15;
+    z-index: -2;
+}
+
+body::after {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: linear-gradient(135deg, #74ebd5 0%, #9face6 100%);
+    opacity: 0.6;
+    z-index: -1;
+}
+
+/* 3️⃣ 로그인/회원가입 컨테이너 */
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    min-height: 100vh;
+    position: relative;
+    z-index: 1;
+}
+
+/* 4️⃣ 로그인/회원가입 박스 */
+.login-box {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 40px;
+    border-radius: 20px;
+    width: 400px;
+    max-width: 90%;
+    box-shadow: 0px 8px 25px rgba(0,0,0,0.2);
+    text-align: center;
+    animation: fadeIn 1s ease-out;
+}
+
+/* 5️⃣ 제목, 부제목 */
+.login-title {
+    font-size: 28px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.login-subtitle {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 30px;
+}
+
+/* 6️⃣ 폼, 입력 그룹 */
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* 7️⃣ 입력 그룹 */
+.input-group {
+    display: flex;
+    align-items: center;
+    border: 2px solid #ddd;
+    border-radius: 12px;
+    padding: 10px 15px;
+    background: #f9f9f9;
+    transition: border-color 0.3s ease;
+    margin-bottom: 15px;
+    position: relative;
+    height: 45px;
+    box-sizing: border-box;
+}
+
+.input-group:focus-within {
+    border-color: #6a5acd;
+}
+
+/* 8️⃣ 입력 필드 */
+.input {
+    border: none;
+    outline: none;
+    flex: 1;
+    font-size: 14px;
+    background: transparent;
+    color: #333;
+    padding-left: 40px;
+    padding-right: 10px;
+    height: 100%;
+    box-sizing: border-box;
+}
+
+/* 9️⃣ 입력 필드 아이콘 */
+.input-icon {
+    position: absolute;
+    left: 15px;
+    font-size: 18px;
+    color: #999;
+}
+
+/* 🔟 아이디 중복 확인 버튼 (수정됨) */
+.check-id-btn {
+    padding: 8px 12px;
+    background-color: #a0a0a0; /* 더 진한 회색 배경 */
+    color: #333; /* 어두운 텍스트 */
+    border: none;
+    border-radius: 9999px; /* 완전한 캡슐 형태 */
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    white-space: nowrap;
+    height: 30px;
+    box-sizing: border-box;
+
+    /* Flexbox를 이용한 중앙 정렬 */
+    display: flex;
+    align-items: center; /* 수직 중앙 정렬 */
+    justify-content: center; /* 수평 중앙 정렬 (텍스트만 해당) */
+}
+
+.check-id-btn:hover:not(:disabled) {
+    background-color: #5a4ccf;
+}
+
+.check-id-btn:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+/* 1️⃣1️⃣ 오류 및 성공 메시지 */
+.error-text {
+    font-size: 12px;
+    color: red;
+    text-align: left;
+    margin-top: -10px;
+    margin-bottom: 10px;
+    padding-left: 15px;
+}
+
+.success-text {
+    color: #28a745;
+    font-size: 12px;
+    margin-top: -10px;
+    margin-bottom: 10px;
+    text-align: left;
+    padding-left: 15px;
+}
+
+/* 1️⃣2️⃣ 버튼 및 스피너 */
+.login-btn {
+    background: #6a5acd;
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.login-btn:hover {
+    background: #5a4ccf;
+    transform: scale(1.03);
+}
+
+.login-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.spinner {
+    animation: spin 1s linear infinite;
+}
+
+/* 1️⃣3️⃣ 회원가입 링크 */
+.signup-text {
+    margin-top: 20px;
+    font-size: 14px;
+    color: #555;
+}
+
+.signup-link {
+    color: #6a5acd;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.signup-link:hover {
+    text-decoration: underline;
+}
+
+/* 1️⃣4️⃣ 애니메이션 */
+ @keyframes fadeIn {
+    from {
+        opacity: 0.15;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+ @keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* 1️⃣5️⃣ 반응형 */
+ @media (max-width: 480px) {
+    .login-box {
+        padding: 30px;
+        width: 90%;
+    }
+    .login-title {
+        font-size: 24px;
+    }
+    .login-subtitle {
+        font-size: 12px;
+    }
+    .input {
+        font-size: 13px;
+    }
+    .login-btn {
+        font-size: 14px;
+        padding: 10px;
+    }
+}
+
+/* 1️⃣6️⃣ 회원가입 모달 스타일 */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    width: 300px;
+    z-index: 1001;
+    color: #333;
+}
+
+.modal-button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #6a5acd;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.modal-button:hover {
+    background-color: #5a4ccf;
+}
