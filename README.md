@@ -33,7 +33,20 @@
 * **실시간 통신**: socket.io-client
 
 ## 3. 프로젝트 구조
-src/ ├── api/ │ └── client.js # Axios 인스턴스 설정 ├── components/ # UI 컴포넌트 │ ├── Login.jsx # 로그인 │ ├── Register.jsx # 회원가입 │ ├── Home.jsx # 메인 랜딩 페이지 │ ├── MapContainer.jsx # 지도 컨테이너 │ ├── ToolsPage.jsx # 시뮬레이션 도구 페이지 │ └── ... ├── contexts/ │ └── AuthContext.jsx # 사용자 인증 상태 관리 ├── App.jsx # 메인 애플리케이션 및 라우팅 설정 └── main.jsx # 애플리케이션 진입점
+
+* `src/`
+    * `api/`
+        * `client.js`: Axios 인스턴스 설정
+    * `components/`: UI 컴포넌트
+        * `Login.jsx`: 로그인
+        * `Register.jsx`: 회원가입
+        * `Home.jsx`: 메인 랜딩 페이지
+        * `MapContainer.jsx`: 지도 컨테이너
+        * `ToolsPage.jsx`: 시뮬레이션 도구 페이지
+    * `contexts/`
+        * `AuthContext.jsx`: 사용자 인증 상태 관리
+    * `App.jsx`: 메인 애플리케이션 및 라우팅 설정
+    * `main.jsx`: 애플리케이션 진입점
 
 ## 4. 코드 흐름
 
